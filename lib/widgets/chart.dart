@@ -45,9 +45,13 @@ class Chart extends StatelessWidget {
   Widget build(BuildContext context) {
     print(groupWeeklyTransactions);
     return Card(
-      elevation: 5,
+      elevation: 3,
       margin: EdgeInsets.all(15),
-      child: Padding(
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(
+                color: Theme.of(context).primaryColorDark, width: .4),
+            borderRadius: BorderRadius.circular(2)),
         padding: EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
