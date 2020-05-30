@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './models/transaction.dart';
+import './widgets/chart.dart';
 import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
 
@@ -19,12 +20,18 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Alcubierre',
           accentColor: Colors.black45,
           textTheme: ThemeData.light().textTheme.copyWith(
-                  subtitle1: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontWeight: FontWeight.w300,
-                fontFamily: 'Moon',
-              )),
+                subtitle1: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'Moon',
+                ),
+                button: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300,
+                  fontFamily: 'Moon',
+                ),
+              ),
           appBarTheme: AppBarTheme(
             color: Colors.white,
             elevation: 0,
@@ -48,6 +55,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<Transaction> _userTransactions = [];
+
+  List<Transaction> get _recentWeeklyTransactions {
+    return _userTransactions.where((tx) {
+      return tx.date.isAfter(
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
+      );
+    }).toList();
+  }
 
   void _addNewTransaction(String txTitle, double txAmount) {
     final newTx = Transaction(
@@ -85,14 +102,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Card(
-                color: Colors.black45,
-                elevation: 10,
-                child: Text('This is the chart'),
-              ),
-            ),
+            Chart(_recentWeeklyTransactions),
             TransactionList(_userTransactions),
           ],
         ),
