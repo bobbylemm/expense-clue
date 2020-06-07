@@ -46,13 +46,14 @@ class Chart extends StatelessWidget {
     print(groupWeeklyTransactions);
     return Card(
       elevation: 3,
-      margin: EdgeInsets.all(15),
+      margin: const EdgeInsets.all(15),
       child: Container(
         decoration: BoxDecoration(
-            border: Border.all(
-                color: Theme.of(context).primaryColorDark, width: .4),
-            borderRadius: BorderRadius.circular(2)),
-        padding: EdgeInsets.all(8.0),
+          border:
+              Border.all(color: Theme.of(context).primaryColorDark, width: .4),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: groupWeeklyTransactions.map((data) {

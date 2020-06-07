@@ -60,8 +60,25 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final List<Transaction> _userTransactions = [];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
+
+  @override
+  dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
 
   List<Transaction> get _recentWeeklyTransactions {
     return _userTransactions.where((tx) {
@@ -109,9 +126,9 @@ class _HomePageState extends State<HomePage> {
 
     final PreferredSizeWidget appBar = Platform.isIOS
         ? CupertinoNavigationBar(
-            middle: Text('Personal Expenses'),
+            middle: const Text('Personal Expenses'),
             trailing: CupertinoButton(
-              child: Icon(
+              child: const Icon(
                 CupertinoIcons.add,
                 color: Colors.black,
               ),
@@ -122,7 +139,7 @@ class _HomePageState extends State<HomePage> {
             title: Text('Personal Expenses'),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 color: Colors.black,
                 onPressed: () => _startAddNewTransaction(context),
               )
@@ -190,7 +207,7 @@ class _HomePageState extends State<HomePage> {
                 ? Container()
                 : FloatingActionButton(
                     elevation: 0,
-                    child: Icon(Icons.add),
+                    child: const Icon(Icons.add),
                     onPressed: () => _startAddNewTransaction(context),
                   ),
           );
