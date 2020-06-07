@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import './adaptive_flat_button.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addNewTransaction;
@@ -46,58 +51,69 @@ class _NewTransactionState extends State<NewTransaction> {
     });
   }
 
+  Widget _showTextField(String placeholder, TextEditingController controller,
+      TextInputType keyBoardType, Function onSubmit) {
+    return Platform.isIOS
+        ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+            child: CupertinoTextField(
+              placeholder: placeholder,
+              controller: controller,
+            ),
+          )
+        : TextField(
+            decoration: InputDecoration(
+              labelText: placeholder,
+            ),
+            controller: controller,
+            keyboardType: Platform.isIOS && keyBoardType == TextInputType.number
+                ? TextInputType.numberWithOptions(signed: true, decimal: true)
+                : keyBoardType,
+            onSubmitted: (_) => onSubmit());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'expense title',
-              ),
-              controller: _titleController,
-            ),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'expense amount',
-              ),
-              keyboardType: TextInputType.number,
-              controller: _amountController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            Container(
-              height: 80,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      _selectedDate == null
-                          ? 'No Date Chosen yet'
-                          : 'Picked date ${DateFormat.yMd().format(_selectedDate)}',
+    return SingleChildScrollView(
+      child: Card(
+        child: Container(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              _showTextField('expense title', _titleController,
+                  TextInputType.text, () => null),
+              _showTextField('expense amount', _amountController,
+                  TextInputType.number, _submitData),
+              Container(
+                height: 80,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'No Date Chosen yet'
+                            : 'Picked date ${DateFormat.yMd().format(_selectedDate)}',
+                      ),
                     ),
-                  ),
-                  FlatButton(
-                    textColor: Theme.of(context).primaryColor,
-                    child: Text(
-                      'Choose date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: _presentDatePicker,
-                  ),
-                ],
+                    AdaptiveFlatButton('Choose date', _presentDatePicker)
+                  ],
+                ),
               ),
-            ),
-            RaisedButton(
-              color: Theme.of(context).primaryColorDark,
-              textColor: Theme.of(context).textTheme.button.color,
-              elevation: 0,
-              child: Text('Add expense'),
-              onPressed: _submitData,
-            )
-          ],
+              RaisedButton(
+                color: Theme.of(context).primaryColorDark,
+                textColor: Theme.of(context).textTheme.button.color,
+                elevation: 0,
+                child: Text('Add expense'),
+                onPressed: _submitData,
+              )
+            ],
+          ),
         ),
       ),
     );
